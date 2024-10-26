@@ -1,15 +1,15 @@
 use std::{cell::RefCell, rc::{Rc, Weak}};
 
-struct Node {
-    id: i32,
-    par: RefCell<Weak<Node>>,
-    rank: RefCell<i32>,
-    volume: RefCell<i32>,
-    edge: RefCell<i32>,
+pub struct Node {
+    pub id: i32,
+    pub par: RefCell<Weak<Node>>,
+    pub rank: RefCell<i32>,
+    pub volume: RefCell<i32>,
+    pub edge: RefCell<i32>,
 }
 
 impl Node {
-    fn new(id: i32) -> Rc<Node> {
+    pub fn new(id: i32) -> Rc<Node> {
         let node = Rc::new(Node {
             id,
             par: RefCell::new(Weak::new()),
@@ -21,7 +21,7 @@ impl Node {
         node
     }
 
-    fn root(self: &Rc<Node>) -> Rc<Node> {
+    pub fn root(self: &Rc<Node>) -> Rc<Node> {
         let par = match self.par.borrow().upgrade() {
             Some(x) => x,
             None => panic!("Node: {} has no parent", self.id)
@@ -34,7 +34,7 @@ impl Node {
         }
     }
 
-    fn merge(self: &Rc<Node>, node: Rc<Node>) {
+    pub fn merge(self: &Rc<Node>, node: Rc<Node>) {
         if self.root().id == node.root().id {
             *self.edge.borrow_mut() += 1;
             return
@@ -46,21 +46,21 @@ impl Node {
         *node.par.borrow_mut() = Rc::downgrade(self);
     }
 
-    fn size(self: &Rc<Node>) -> i32 {
+    pub fn size(self: &Rc<Node>) -> i32 {
         *self.volume.borrow()
     }
 
-    fn is_same(self: &Rc<Node>, node: Rc<Node>) -> bool {
+    pub fn is_same(self: &Rc<Node>, node: Rc<Node>) -> bool {
         self.root().id == node.root().id
     }
 }
 
-struct UnionFind {
+pub struct UnionFind {
     nodes: Vec<Rc<Node>>,
 }
 
 impl UnionFind {
-    fn new(size: i32) -> UnionFind {
+    pub fn new(size: i32) -> UnionFind {
         let mut nodes = Vec::new();
         for i in 0..size {
             let node = Node::new(i);
@@ -71,13 +71,13 @@ impl UnionFind {
 }
 
 impl UnionFind {
-    fn root(&self, k: usize) -> Rc<Node> {
+    pub fn root(&self, k: usize) -> Rc<Node> {
         let node = Rc::clone(&self.nodes[k]);
         let node = node.root();
         node
     }
 
-    fn merge(&self, k1: usize, k2: usize) {
+    pub fn merge(&self, k1: usize, k2: usize) {
         let node1 = Rc::clone(&self.nodes[k1]).root();
         let node2 = Rc::clone(&self.nodes[k2]).root();
         if node1.rank > node2.rank {
@@ -87,12 +87,12 @@ impl UnionFind {
         }
     }
     
-    fn size(&self, k: usize) -> i32 {
+    pub fn size(&self, k: usize) -> i32 {
         let node = Rc::clone(&self.nodes[k]).root();
         node.size()
     }
     
-    fn is_same(&self, k1: usize, k2: usize) -> bool {
+    pub fn is_same(&self, k1: usize, k2: usize) -> bool {
         let node1 = Rc::clone(&self.nodes[k1]).root();
         let node2 = Rc::clone(&self.nodes[k2]).root();
         node1.is_same(node2)
