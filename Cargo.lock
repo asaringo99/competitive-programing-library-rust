@@ -3,5 +3,13 @@
 version = 3
 
 [[package]]
+name = "lazy_segment_tree"
+version = "0.1.0"
+
+[[package]]
+name = "segment_tree"
+version = "0.1.0"
+
+[[package]]
 name = "union_find"
 version = "0.1.0"

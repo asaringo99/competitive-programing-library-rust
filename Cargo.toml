@@ -1,5 +1,7 @@
 [workspace]
 
 members = [
+    "lazy_segment_tree",
+    "segment_tree",
     "union_find",
 ]
